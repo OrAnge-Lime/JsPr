@@ -1,14 +1,20 @@
 <template>
     <li>
-      <span :class="{ done: todo.completed }">
-          <input type="checkbox" @change="todo.completed = !todo.completed" />
+        <input 
+          type="checkbox"
+          @input="toggleStatus"
+          :checked = "todo.isCompleted"
+        />
+      <span :class="{ done: todo.isCompleted }">
           {{ todo.title }}
       </span>
-      <button @click="$emit('remove-todo', todo.id)" class="rm">x</button>
+      <button @click="onRemoveClicked(todo.id)" class="rm">x</button>
     </li>
 </template>
 
 <script>
+import {deleteTodoById, patchTodo} from '@/service/dataService';
+
 export default {
     name: 'TodoItem',
     props: {
@@ -17,6 +23,21 @@ export default {
             required: true,
         },
     },
+    methods: {
+        async toggleStatus() {
+            const updatedTodo = await patchTodo({
+                id: this.todo.id,
+                isCompleted: !this.todo.isCompleted
+            });
+            this.todo.isCompleted = Boolean(updatedTodo.isCompleted)
+        },
+        async onRemoveClicked() {
+            const responce = await deleteTodoById(id);
+            if (response) {
+                this.$emit('refresh');
+            }
+        }
+    }
 };
 </script>
 

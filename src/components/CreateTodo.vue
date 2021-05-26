@@ -1,16 +1,37 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" @keyup.enter="onSubmitClicked">
     <input type="text" v-model="title" />
-    <button @click="$emit('create-todo', title)">Создать Todo</button>
+    <button @click="onSubmitClicked">Создать Todo</button>
+    <button @click="onDeleteClicked">Удалить список</button>
   </div>
 </template>
 
 <script>
+import {createTodo} from '@/service/dataService';
+import {deleteAllTodo} from '@/service/dataService';
+
+
 export default {
   name: "CreateTodo",
   data: () => ({
-    title,
+    title: '',
   }),
+  methods: {
+    async onSubmitClicked() {
+      if (this.title !== '') {
+        const createdTodo = await createTodo({
+          title: this.title
+        })
+        this.$emit('create-todo', createdTodo);
+        this.title = '';
+      }
+    },
+
+    async onDeleteClicked() {
+      const deleteTodo = await deleteAllTodo()
+      this.$emit('refresh')
+    }
+  }
 };
 </script>
 

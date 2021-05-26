@@ -1,22 +1,21 @@
 <template>
     <ul class="list-content">
-        <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" @remove-todo="onRemoveClicked"/>
+        <TodoItem v-for="todo in todos" 
+        :key="todo.id" 
+        :todo="todo"
+        @refresh = "$emit('refresh')"
+        />
     </ul>
 </template>
 
 <script>
 import TodoItem from '@/components/TodoItem';
 
-export default {
+export default { //
     name: 'TodoList',
     props: ['todos'],
     components: {
         TodoItem,
-    },
-    methods: {
-        onRemoveClicked(id) {
-            this.$emit('remove-todo', id);
-        },
     },
 };
 </script>

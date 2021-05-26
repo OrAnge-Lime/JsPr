@@ -1,13 +1,13 @@
 <template>
   <div class="home-page">
     <div>
-      <CreateTodo @create-todo="onSubmitClicked" />
+      <CreateTodo @create-todo="onSubmitClicked" @refresh="fetchTodos"/>
     </div>
     <div v-if="loading">Loading...</div>
     <TodoList
       v-else-if="todos && todos.length"
       :todos="todos"
-      @remove-todo="onRemoveClicked"
+      @refresh="fetchTodos"
     />
     <div v-else>List is empty(</div>
   </div>
@@ -16,6 +16,7 @@
 <script>
 import TodoList from "@/components/Todolist";
 import CreateTodo from "@/components/CreateTodo";
+import {fetchTodos} from '@/service/dataService';
 
 export default {
   name: "Home",
@@ -34,29 +35,28 @@ export default {
     async fetchTodos() {
       try {
         this.loading = true;
-        const response = await fetch(
-          "https://jsonplaceholder.typicode.com/todos"
-        );
-        this.todos = await response.json();
+        this.TodoList = await fetchTodos();
       } catch (error) {
-
       } finally {
         this.loading = false;
       }
     },
-    onRemoveClicked(id) {
-      this.todos = this.todos.filter((todo) => todo.id !== id);
-    },
+
+    // onRemoveClicked(id) {
+    //   this.todos = this.todos.filter((todo) => todo.id !== id);
+    // },
+
     onSubmitClicked(title) {
-      if(!title) return;
-      let todo = {
-        id: Date.now(),
-        completed: false,
-        title,
-        userId: 1, 
-      };
+      // if(!title) return;
+      // let todo = {
+      //   id: Date.now(),
+      //   completed: false,
+      //   title,
+      //   userId: 1, 
+      // };
       this.todos.push(todo);
     },
+
   },
 };
 </script>
